@@ -11,7 +11,7 @@ type PatchAccountRequest struct {
 }
 
 type ChangeAccountRequest struct {
-	OldName string `json:"old_name"`
+	Name    string `json:"name"`
 	NewName string `json:"new_name"`
 }
 

@@ -130,15 +130,15 @@ func (h *Handler) PatchAccount(c echo.Context) error {
 
 // Меняет имя
 func (h *Handler) ChangeAccount(c echo.Context) error {
-	var request dto.ChangeAccountRequest // {"old_name": "alice", "new_name": "bob"}
+	var request dto.ChangeAccountRequest // {"name": "alice", "new_name": "bob"}
 	if err := c.Bind(&request); err != nil {
 		c.Logger().Error(err)
 
 		return c.String(http.StatusBadRequest, "invalid request")
 	}
 
-	if len(request.OldName) == 0 {
-		return c.String(http.StatusBadRequest, "empty old name")
+	if len(request.Name) == 0 {
+		return c.String(http.StatusBadRequest, "empty name")
 	}
 
 	if len(request.NewName) == 0 {
@@ -147,15 +147,15 @@ func (h *Handler) ChangeAccount(c echo.Context) error {
 
 	h.guard.Lock()
 
-	if _, ok := h.accounts[request.OldName]; !ok {
+	if _, ok := h.accounts[request.Name]; !ok {
 		h.guard.Unlock()
 
 		return c.String(http.StatusForbidden, "account doesn't exist")
 	}
 
-	prev_amount := h.accounts[request.OldName].Amount
+	prev_amount := h.accounts[request.Name].Amount
 
-	delete(h.accounts, request.OldName)
+	delete(h.accounts, request.Name)
 	h.accounts[request.NewName] = &models.Account{
 		Name:   request.NewName,
 		Amount: prev_amount,
